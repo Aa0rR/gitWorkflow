@@ -40,11 +40,11 @@ echo "${NC}The entered path is ${RED}$PROJECT_PATH"
 read -r -p "${ITALIC_BLUE}# Are you sure? [y/N] ${NC}" response
 case "$response" in
     [yY][eE][sS]|[yY]) 
-        ;;
+	;;
     *)
-        echo "${ITALIC_BLUE}# Retype the path: ${NC}"
+	echo "${ITALIC_BLUE}# Retype the path: ${NC}"
 	read PROJECT_PATH
-        ;;
+	;;
 esac
 echo
 cd $PROJECT_PATH
@@ -89,10 +89,10 @@ case "$changes" in
 		#git checkout $branch
 		echo 
 		git status
-        	;;
-    		[nN])
+		;;
+		[nN])
 		#In the right branch
-        	;;
+		;;
 	esac
 	;;
 esac
@@ -119,21 +119,21 @@ case "$submodules" in
 				echo
 				read -r -p "${ITALIC_BLUE}# Do you have to add all the files? [y/n] ${NC}" add
 				case "$add" in
-    					[yY][eE][sS]|[yY]) 
+    				[yY][eE][sS]|[yY]) 
 					#Add all the files
 					#git add *
-        				;;
-    					[nN])
+        			;;
+    				[nN])
 					#Add only the entered files
 					echo
-        				git status
+					git status
 					echo
 					read -r -p "${ITALIC_BLUE}# Enter the files with their above path in the same line separated by space:  ${NC}" -a arr
 					for file in "${arr[@]}"; do 
-   					echo "${GREEN}$file"
-					#git add $file
+   						echo "${GREEN}$file"
+						#git add $file
 					done
-        				;;
+					;;
 				esac
 				;;
 				[nN])
@@ -141,7 +141,7 @@ case "$submodules" in
 				echo 
 				read -r -p "${ITALIC_BLUE}# Are you on a Detached HEAD? [y/n] ${NC}" detached
 				case "$detached" in
-    					[yY][eE][sS]|[yY]) 
+					[yY][eE][sS]|[yY]) 
 					#Currently on a detached HEAD
 					#git stash
 					#git pull
@@ -150,20 +150,19 @@ case "$submodules" in
 					#git checkout $branch
 					echo 
 					git status
-        				;;
-    					[nN])
+					;;
+					[nN])
 					#Not in Detached HEAD
 					#git pull
-        				;;
+					;;
 				esac
 				;;
 			esac
-		
 		done
-        	;;
-    	[nN])
+    ;;
+    [nN])
 	#No submodule
-        ;;
+	;;
 esac
 echo 
 git status
@@ -181,9 +180,9 @@ case "$changes2" in
 	#git commit -m "$commitMessage"
 	#git pull
 	#git push
-        ;;
-    	[nN])
+	;;
+	[nN])
 	#Changes not done
-        ;;
+	;;
 esac
 echo "${YELLOW}[-] ${GREEN}Have a nice day!"
