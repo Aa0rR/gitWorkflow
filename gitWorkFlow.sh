@@ -4,49 +4,49 @@
 #---------------) Colors (----------------#
 ###########################################
 
-C = $ (printf '\033') 
-RED = "${C}[1;31m" 
-SED_RED = "${C}[1;31m&${C}[0m" 
-GREEN = "${C}[1;32m" 
-SED_GREEN = "${C}[1;32m&${C}[0m" 
-YELLOW = "${C}[1;33m" 
-SED_YELLOW = "${C}[1;33m&${C}[0m" 
-SED_RED_YELLOW = "${C}[1;31;103m&${C}[0m" 
-BLUE = "${C}[1;34m" 
-SED_BLUE = "${C}[1;34m&${C}[0m" 
-ITALIC_BLUE = "${C}[1;34m${C}[3m" 
-LIGHT_MAGENTA = "${C}[1;95m" 
-SED_LIGHT_MAGENTA = "${C}[1;95m&${C}[0m" 
-LIGHT_CYAN = "${C}[1;96m" 
-SED_LIGHT_CYAN = "${C}[1;96m&${C}[0m" 
-LG = "${C}[1;37m" #LightGray
-SED_LG = "${C}[1;37m&${C}[0m" 
-DG = "${C}[1;90m" #DarkGray
-SED_DG = "${C}[1;90m&${C}[0m" 
-NC = "${C}[0m" 
-UNDERLINED = "${C}[5m" 
-ITALIC = "${C}[3m" 
+C=$(printf '\033')
+RED="${C}[1;31m"
+SED_RED="${C}[1;31m&${C}[0m"
+GREEN="${C}[1;32m"
+SED_GREEN="${C}[1;32m&${C}[0m"
+YELLOW="${C}[1;33m"
+SED_YELLOW="${C}[1;33m&${C}[0m"
+SED_RED_YELLOW="${C}[1;31;103m&${C}[0m"
+BLUE="${C}[1;34m"
+SED_BLUE="${C}[1;34m&${C}[0m"
+ITALIC_BLUE="${C}[1;34m${C}[3m"
+LIGHT_MAGENTA="${C}[1;95m"
+SED_LIGHT_MAGENTA="${C}[1;95m&${C}[0m"
+LIGHT_CYAN="${C}[1;96m"
+SED_LIGHT_CYAN="${C}[1;96m&${C}[0m"
+LG="${C}[1;37m" #LightGray
+SED_LG="${C}[1;37m&${C}[0m"
+DG="${C}[1;90m" #DarkGray
+SED_DG="${C}[1;90m&${C}[0m"
+NC="${C}[0m"
+UNDERLINED="${C}[5m"
+ITALIC="${C}[3m"
   
 ###########################################
 
 
 function box () {
-	local s = ("$@") b w 
-	for l in "${s[@]}"; do
-		((w < $ {#l})) && { b="$l"; w="${#l}"; }
-	done 
- 	tput setaf 3 
- 	echo "${GREEN}" 
- 	echo " -${b//?/-}-
-	| ${b//?/ } |" 
- 	for l in "${s[@]}"; do
-		echo "${GREEN}" 
-		printf '| %s%*s%s |\n' "$(tput setaf 4)" "-$w" "$l" "$(tput setaf 3)" 
-	done
- 	echo "${GREEN}" 
-	echo "| ${b//?/ } |
-	-${b//?/-}-" 
-	tput sgr 0 
+	local s=("$@") b w
+  	for l in "${s[@]}"; do
+    		((w<${#l})) && { b="$l"; w="${#l}"; }
+  	done
+  	tput setaf 3
+	echo "${GREEN}"
+  	echo " -${b//?/-}-
+| ${b//?/ } |"
+  	for l in "${s[@]}"; do
+		echo "${GREEN}"
+    	printf '| %s%*s%s |\n' "$(tput setaf 4)" "-$w" "$l" "$(tput setaf 3)"
+  	done
+	echo "${GREEN}"
+  	echo "| ${b//?/ } |
+ -${b//?/-}-"
+  	tput sgr 0
 } 
 
 echo
@@ -64,29 +64,31 @@ while true; do #Path while (string)
 	echo 
  	echo "${NC}The entered path is ${RED}$PROJECT_PATH" 
 	while true; do #You sure while (y/n)
-		read - r -p "${ITALIC_BLUE}# Are you sure? [y/N] ${NC}" response 
+		read -r -p "${ITALIC_BLUE}# Are you sure? [y/N] ${NC}" response 
  		case "$response" in 
-			[yY] *) #Sure
+			[yY]) #Sure
 			break 
 			;; 
-			[nN] *) #Not sure
+			[nN]) #Not sure
 				echo 
+				ls
+				echo
 				echo "${ITALIC_BLUE}# Retype the path: ${NC}" 
- 				ls 
+ 				echo
  				break 
 			;;
-			*) #Default
+			* ) #Default
 				echo "${RED}! Please type only Yy or Nn${NC}" 
 	 			echo 
 			;;
 		esac 
 	done #End sure while (y/n)
-	if[[$response = "y" || $response = "Y"]]; then 
+	if [[ $response = "y" || $response = "Y" ]]; then 
 		break 
 	fi 
 done #End path while (string)
 echo 
-if[-d "$PROJECT_PATH"]; then 
+if [ -d "$PROJECT_PATH" ]; then 
 	cd $PROJECT_PATH 
 else
 	box "Sorry this path does not exist in the system, restart the script"
@@ -97,14 +99,14 @@ echo
 git status 
 echo 
 while true; do #Changes while (y/n)
-	read - r -p "${ITALIC_BLUE}# Did you make any changes? [y/n] ${NC}" changes 
+	read -r -p "${ITALIC_BLUE}# Did you make any changes? [y/n] ${NC}" changes 
  	case "$changes" in 
-		[yY][eE][sS] |[yY]) #Changes done
+		[yY]) #Changes done
 			echo 
 		  	while true; do #Add all files while (y/n)
-				read - r -p "${ITALIC_BLUE}# Do you have to add all the files? [y/n] ${NC}" add 
+				read -r -p "${ITALIC_BLUE}# Do you have to add all the files? [y/n] ${NC}" add 
  				case "$add" in 
-					[yY][eE][sS] |[yY]) #Add all the files
+					[yY]) #Add all the files
 		  				git add * 
 						break 
 					;;
@@ -112,7 +114,7 @@ while true; do #Changes while (y/n)
 						echo 
 						git status 
 						echo 
-						read - r -p "${ITALIC_BLUE}# Enter the files with their above path in the same line separated by space:  ${NC}" -a arr 
+						read -r -p "${ITALIC_BLUE}# Enter the files with their above path in the same line separated by space:  ${NC}" -a arr 
  						for file in "${arr[@]}"; do
 							echo "${GREEN}$file" 
 		  					git add $file 
@@ -128,9 +130,9 @@ while true; do #Changes while (y/n)
  			done #End add all files while (y/n)
 			echo 
 			while true; do #Detached HEAD while (y/n)
-				read - r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
+				read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
  				case "$wrong_branch" in 
-				[yY][eE][sS] |[yY])  #Currently on the wrong branch
+					[yY])  #Currently on the wrong branch
 		  			git stash 
 		 			git pull 
 		 			echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
@@ -156,11 +158,11 @@ while true; do #Changes while (y/n)
 		[nN]) #Changes not done
 			echo 
 			while true; do #Wrong branch or detached HEAD while (y/n)
-				read - r - p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch 
+				read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch 
  				case "$wrong_branch" in 
 					[yY][eE][sS] |[yY]) #Currently on the wrong branch
 		  				git pull 
-		  				echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
+		  				echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${BLUE})${NC}"
 		  				read branch 
  						git checkout $branch 
  						echo 
@@ -186,7 +188,7 @@ while true; do #Changes while (y/n)
 done #End changes while (y/n)
 echo 
 while true; do #Submodule while (y/n)
-	read - r -p "${ITALIC_BLUE}# Do you have one or more submodules? [y/n] ${NC}" submodules 
+	read -r -p "${ITALIC_BLUE}# Do you have one or more submodules? [y/n] ${NC}" submodules 
  	case "$submodules" in
 		[yY][eE][sS] |[yY]) #One or more submodule
 			echo 
@@ -238,7 +240,7 @@ while true; do #Submodule while (y/n)
 									[yY][eE][sS] |[yY]) #Currently on a detached HEAD
 		  								git stash 
 		  								git pull 
-		  								echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
+		  								echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${BLUE})${NC}"
 		  								read branch 
 										git checkout $branch
  										git stash pop 
@@ -264,7 +266,7 @@ while true; do #Submodule while (y/n)
 									[yY][eE][sS] |[yY]) #Currently on a detached HEAD
 										git stash 
 										git pull 
-										echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
+										echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${BLUE})${NC}"
 										read branch 
 										git checkout $branch 
 										echo 
