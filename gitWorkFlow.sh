@@ -27,12 +27,37 @@ NC="${C}[0m"
 UNDERLINED="${C}[5m"
 ITALIC="${C}[3m"
 
+
+function box_out()
+{
+
+  local s=("$@") b w
+  for l in "${s[@]}"; do
+    ((w<${#l})) && { b="$l"; w="${#l}"; }
+  done
+  tput setaf 3
+echo "${GREEN}"
+  echo " -${b//?/-}-
+| ${b//?/ } |"
+  for l in "${s[@]}"; do
+echo "${GREEN}"
+    printf '| %s%*s%s |\n' "$(tput setaf 4)" "-$w" "$l" "$(tput setaf 3)"
+  done
+echo "${GREEN}"
+  echo "| ${b//?/ } |
+ -${b//?/-}-"
+  tput sgr 0
+}
+
 echo
-echo "${YELLOW}[-] ${GREEN}Hi, welcome to the git workflow script${NC}"
-echo "Current path:${RED}" 
+box_out "${YELLOW}[-] ${GREEN}Hi, welcome to the git workflow script"
+echo
+echo "${NC}Current path:${RED}" 
 pwd
+echo "${NC}"
+ls
 echo
-echo "${ITALIC_BLUE}# Type the absolute path of the project: ${NC}"
+echo "${ITALIC_BLUE}# Type the path of the project: ${NC}"
 echo
 read PROJECT_PATH
 echo 
@@ -73,13 +98,33 @@ case "$changes" in
    			echo "${GREEN}$file"
 			#git add $file
 		done
+		git status
         	;;
+	esac
+	echo 
+	read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
+	case "$wrong_branch" in
+    		[yY][eE][sS]|[yY]) 
+		#Currently on the wrong branch
+		#git stash
+		#git pull
+		echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
+		read branch
+		#git checkout $branch
+		#git stash pop
+		#git add *
+		echo 
+		git status
+		;;
+		[nN])
+		#In the right branch
+		;;
 	esac
 	;;
 	[nN])
  	#Changes not done
 	echo 
-	read -r -p "${ITALIC_BLUE}# Are you on the wrong branch? [y/n] ${NC}" wrong_branch
+	read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
 	case "$wrong_branch" in
     		[yY][eE][sS]|[yY]) 
 		#Currently on the wrong branch
@@ -101,6 +146,8 @@ read -r -p "${ITALIC_BLUE}# Do you have one or more submodules? [y/n] ${NC}" sub
 case "$submodules" in
     	[yY][eE][sS]|[yY]) 
 	#One or more submodule
+	echo
+	cat .gitmodules
 	echo
 	git status
 	echo
@@ -133,6 +180,26 @@ case "$submodules" in
    						echo "${GREEN}$file"
 						#git add $file
 					done
+					;;
+				esac
+				echo
+				read -r -p "${ITALIC_BLUE}# Are you on a Detached HEAD? [y/n] ${NC}" detached
+				case "$detached" in
+					[yY][eE][sS]|[yY]) 
+					#Currently on a detached HEAD
+					#git stash
+					#git pull
+					echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
+					read branch
+					#git checkout $branch
+					#git stash pop
+					#git add *
+					echo 
+					git status
+					;;
+					[nN])
+					#Not in Detached HEAD
+					#git pull
 					;;
 				esac
 				;;
@@ -173,10 +240,9 @@ case "$changes2" in
 	echo "${ITALIC_BLUE}# Enter the message of the commit: ${NC}"
 	read commitMessage
 	echo
-	echo "This is the message:"
-	echo "###########################################"
-	echo $commitMessage
-	echo "###########################################"
+	echo "This is the message:${BLUE}"
+	box_out $commitMessage
+	echo "${NC}"
 	#git commit -m "$commitMessage"
 	#git pull
 	#git push
@@ -185,4 +251,7 @@ case "$changes2" in
 	#Changes not done
 	;;
 esac
-echo "${YELLOW}[-] ${GREEN}Have a nice day!"
+echo "${BLUE}# All done!${NC}"
+echo
+box_out "${YELLOW}[-] ${GREEN}Have a nice day!"
+echo
