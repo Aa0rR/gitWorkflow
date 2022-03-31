@@ -30,7 +30,6 @@ ITALIC="${C}[3m"
 
 function box_out()
 {
-
   local s=("$@") b w
   for l in "${s[@]}"; do
     ((w<${#l})) && { b="$l"; w="${#l}"; }
@@ -59,88 +58,102 @@ ls
 echo
 echo "${ITALIC_BLUE}# Type the path of the project: ${NC}"
 echo
-read PROJECT_PATH
-echo 
-echo "${NC}The entered path is ${RED}$PROJECT_PATH"
-read -r -p "${ITALIC_BLUE}# Are you sure? [y/N] ${NC}" response
-case "$response" in
-    [yY][eE][sS]|[yY]) 
-	;;
-    *)
-	echo "${ITALIC_BLUE}# Retype the path: ${NC}"
+
+while true; do
 	read PROJECT_PATH
-	;;
-esac
+	echo 
+	echo "${NC}The entered path is ${RED}$PROJECT_PATH"
+	read -r -p "${ITALIC_BLUE}# Are you sure? [y/N] ${NC}" response
+	case "$response" in
+    [yY]*) 
+			break
+		;;
+    [nN]*)
+			echo "${ITALIC_BLUE}# Retype the path: ${NC}"
+		;;
+		* ) 
+			echo "${RED}! Please type only Yy or Nn${NC}"
+		;;
+	esac
+done
+
 echo
 cd $PROJECT_PATH
 ls
 echo
 git status
 echo
-read -r -p "${ITALIC_BLUE}# Did you make any changes? [y/n] ${NC}" changes
-case "$changes" in
-	[yY][eE][sS]|[yY]) 
-	#Changes done
-	echo
-	read -r -p "${ITALIC_BLUE}# Do you have to add all the files? [y/n] ${NC}" add
-	case "$add" in
-    		[yY][eE][sS]|[yY]) 
-		#Add all the files
-		#git add *
-        	;;
-    		[nN])
-		#Add only the entered files
-		echo
-        	git status
-		echo
-		read -r -p "${ITALIC_BLUE}# Enter the files with their above path in the same line separated by space:  ${NC}" -a arr
-		for file in "${arr[@]}"; do 
-   			echo "${GREEN}$file"
-			#git add $file
-		done
-		git status
-        	;;
-	esac
-	echo 
-	read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
-	case "$wrong_branch" in
-    		[yY][eE][sS]|[yY]) 
-		#Currently on the wrong branch
-		#git stash
-		#git pull
-		echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
-		read branch
-		#git checkout $branch
-		#git stash pop
-		#git add *
-		echo 
-		git status
+while true; do
+	read -r -p "${ITALIC_BLUE}# Did you make any changes? [y/n] ${NC}" changes
+	case "$changes" in
+		[yY][eE][sS]|[yY]) 
+			#Changes done
+			echo
+			read -r -p "${ITALIC_BLUE}# Do you have to add all the files? [y/n] ${NC}" add
+			case "$add" in
+		    		[yY][eE][sS]|[yY]) 
+				#Add all the files
+				#git add *
+		        	;;
+		    		[nN])
+				#Add only the entered files
+				echo
+		        	git status
+				echo
+				read -r -p "${ITALIC_BLUE}# Enter the files with their above path in the same line separated by space:  ${NC}" -a arr
+				for file in "${arr[@]}"; do 
+		   			echo "${GREEN}$file"
+					#git add $file
+				done
+				git status
+		        	;;
+			esac
+			echo 
+			read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
+			case "$wrong_branch" in
+		    		[yY][eE][sS]|[yY]) 
+				#Currently on the wrong branch
+				#git stash
+				#git pull
+				echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
+				read branch
+				#git checkout $branch
+				#git stash pop
+				#git add *
+				echo 
+				git status
+				;;
+				[nN])
+					#In the right branch
+				;;
+				esac
+				break
 		;;
 		[nN])
-		#In the right branch
+	 		#Changes not done
+			echo 
+			read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
+			case "$wrong_branch" in
+	    		[yY][eE][sS]|[yY]) 
+						#Currently on the wrong branch
+						#git pull
+						echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
+						read branch
+						#git checkout $branch
+						echo 
+						git status
+						;;
+					[nN])
+						#In the right branch
+					;;
+			esac
+			break
+		;;
+		* ) 
+			echo "${RED}! Please type only Yy or Nn${NC}"
 		;;
 	esac
-	;;
-	[nN])
- 	#Changes not done
-	echo 
-	read -r -p "${ITALIC_BLUE}# Are you on the wrong branch or in a Detached HEAD? [y/n] ${NC}" wrong_branch
-	case "$wrong_branch" in
-    		[yY][eE][sS]|[yY]) 
-		#Currently on the wrong branch
-		#git pull
-		echo "${ITALIC_BLUE}# Enter the name of the branch (${RED}if it doesn't exist create it${NC}) "
-		read branch
-		#git checkout $branch
-		echo 
-		git status
-		;;
-		[nN])
-		#In the right branch
-		;;
-	esac
-	;;
-esac
+done
 echo 
 read -r -p "${ITALIC_BLUE}# Do you have one or more submodules? [y/n] ${NC}" submodules
 case "$submodules" in
