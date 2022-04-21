@@ -61,6 +61,13 @@ echo "${ITALIC_BLUE}# Type the path of the project: ${NC}"
 echo
 while true; do #Path while (string)
 	read PROJECT_PATH 
+	if [ ! -d "$PROJECT_PATH/.git"]; then
+    		echo
+		echo "${RED} The entered path is not a git project."
+		echo "Please enter another path ${NC}"
+		echo
+		exit
+	fi
 	echo 
  	echo "${NC}The entered path is ${RED}$PROJECT_PATH" 
 	while true; do #You sure while (y/n)
